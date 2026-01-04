@@ -46,20 +46,26 @@ const Text = styled(Typography)`
     font-size: 16px;
 
 `
+const signupInitialValues = {
+    name:'',
+    username:'',
+    password:'',
+}
 
 
 const Login = () => {
     const imageURL = 'https://www.sesta.it/wp-content/uploads/2021/03/logo-blog-sesta-trasparente.png';
     
     const [account, toogleAccount] = useState('login'); /*account:- current screen state, 'login':- default screen, toogleAccount:- state change karne ka function */
+    const [signup, setSignup] = useState(signupInitialValues);
 
     const toogleSignup = () => {
         account === 'signup' ? toogleAccount('login') : toogleAccount("signup");
     }
 
-    /*const onInputChange = (e) => {
-        
-    }*/
+    const onInputChange = (e) => {
+        setSignup({...signup, [e.target.name]: e.target.value});
+    }
 
     return(
         <Component>
@@ -74,11 +80,11 @@ const Login = () => {
                     <Text style={{ textAlign: 'center' }}>OR</Text>
                     <SignupButton onClick={()=> toogleSignup()}>Create an account</SignupButton>
                 </Wrapper> 
-            :       /*onChange={()=> onInputChange()} */
+            :        
                 <Wrapper>
-                    <TextField variant="standard"  label= "Enter Name"/>
-                    <TextField variant="standard"  label= "Enter Username"/>
-                    <TextField variant="standard"  label= "Enter Password"/>
+                    <TextField variant="standard" onChange={(e)=> onInputChange(e)} name='name' label= "Enter Name"/>
+                    <TextField variant="standard" onChange={(e)=> onInputChange(e)} name='username' label= "Enter Username"/>
+                    <TextField variant="standard" onChange={(e)=> onInputChange(e)} name='password' label= "Enter Password"/>
 
                     <SignupButton>Signup</SignupButton>
                     <Text style={{ textAlign: 'center' }}>OR</Text>
