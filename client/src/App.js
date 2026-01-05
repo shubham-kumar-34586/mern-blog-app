@@ -12,7 +12,10 @@ import Header from './components/account/header/Header';
 
 const PrivateRoute = ({ isAuthenticated, ...props }) => {
   return isAuthenticated ? 
-  <Outlet /> 
+  <>
+  <Header />
+  <Outlet />
+  </> 
   : <Navigate replace to="/login" />;
 };
 
@@ -26,8 +29,6 @@ function App() {
   return (
     
   <DataProvider>
-  
-    <Header />
     <div style={{marginTop: 64 }}>
       <Routes>
         <Route path="/login" element={<Login isUserAuthenticated={isUserAuthenticated} />} />
