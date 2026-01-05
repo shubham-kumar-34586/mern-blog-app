@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import {Box, TextField, Button, styled, Typography } from '@mui/material';
+import {API} from '../../service/api'
+
 
 const Component = styled(Box)`  /*center main card jaisa layout */
     width: 400px;
@@ -41,6 +43,15 @@ const SignupButton = styled(Button)`
     border-radius: 2px;
     box-shadow: 0 2px 4px 0 rgb(0 0 0/ 20%);
 `
+const Error = styled(Typography)`
+    font-size: 10px;
+    color: #ff6161;
+    line-height: 0;
+    margin-top: 10px;
+    font-weight: 600;    
+`
+
+
 const Text = styled(Typography)`
     color: #878787;
     font-size: 16px;
@@ -58,6 +69,7 @@ const Login = () => {
     
     const [account, toogleAccount] = useState('login'); /*account:- current screen state, 'login':- default screen, toogleAccount:- state change karne ka function */
     const [signup, setSignup] = useState(signupInitialValues);
+    const [error, setError] = useState('')
 
     const toogleSignup = () => {
         account === 'signup' ? toogleAccount('login') : toogleAccount("signup");
@@ -66,6 +78,21 @@ const Login = () => {
     const onInputChange = (e) => {
         setSignup({...signup, [e.target.name]: e.target.value});
     }
+
+    const signupUser = async () => {
+    try {
+        let response = await API.userSignup(signup);
+
+        if (response.isSucess) {
+            setError('');
+            setSignup(signupInitialValues);
+            toogleAccount('login');
+        }
+    } catch (error) {
+        setError(error.msg || 'Something went wrong');
+    }
+};
+
 
     return(
         <Component>
@@ -76,6 +103,9 @@ const Login = () => {
                 <Wrapper>
                     <TextField variant="standard" label= "Enter Username"/>
                     <TextField variant="standard" label= "Enter Password"/>
+
+                    { error && <Error>{error}</Error>}
+
                     <LoginButton variant="contained">Login</LoginButton>
                     <Text style={{ textAlign: 'center' }}>OR</Text>
                     <SignupButton onClick={()=> toogleSignup()}>Create an account</SignupButton>
@@ -85,8 +115,9 @@ const Login = () => {
                     <TextField variant="standard" onChange={(e)=> onInputChange(e)} name='name' label= "Enter Name"/>
                     <TextField variant="standard" onChange={(e)=> onInputChange(e)} name='username' label= "Enter Username"/>
                     <TextField variant="standard" onChange={(e)=> onInputChange(e)} name='password' label= "Enter Password"/>
-
-                    <SignupButton>Signup</SignupButton>
+                    
+                    { error && <Error>{error}</Error>}
+                    <SignupButton onClick={()=> signupUser()}>Signup</SignupButton>
                     <Text style={{ textAlign: 'center' }}>OR</Text>
                     <LoginButton variant="contained" onClick={()=> toogleSignup()}>Already have an account</LoginButton>
                 </Wrapper>
