@@ -2,7 +2,7 @@
 
 //components
 import { Grid } from "@mui/material";
-import Banner from "../../banner/Banner";
+import Banner from "../banner/Banner";
 import Categories from "./Categories";
 
 const Home = () => {

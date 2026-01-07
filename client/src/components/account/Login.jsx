@@ -118,8 +118,8 @@ const loginUser = async ()=> {
     if(response.isSuccess){
         setError('');
 
-        sessionStorage.setItem('accessToken', `Bearer ${response.data.accessToken}`);
-        sessionStorage.setItem('refreshToken', `Bearer ${response.data.refreshToken}`);
+        localStorage.setItem('accessToken', response.data.accessToken);
+        localStorage.setItem('refreshToken', response.data.refreshToken);
 
         setAccount({ username: response.data.username, name: response.data.name });
 

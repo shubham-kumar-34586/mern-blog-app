@@ -1,5 +1,9 @@
 // API_NOTIFICATION_MESSAGES 
 // This object stores all API related messages in one place
+
+import { UploadFile } from "@mui/icons-material";
+import CreatePost from "../components/create/CreatePost";
+
 // It helps in showing loading, success, and error messages in the UI
 export const API_NOTIFICATION_MESSAGES = {
 
@@ -40,5 +44,7 @@ export const API_NOTIFICATION_MESSAGES = {
 // SAMple request
 export const SERVICE_URLS = {
     userSignup: { url: '/signup', method: 'POST' },
-    userLogin: {url: '/login', method: 'POST'}
+    userLogin: {url: '/login', method: 'POST'},
+    uploadFile: { url: '/file/upload', method: 'POST' },
+    createPost: { url: '/create', method: 'POST' }
 }

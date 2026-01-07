@@ -9,11 +9,18 @@ dotenv.config();
 
 const app = express();
 
-// ✅ REQUIRED MIDDLEWARES (ORDER MATTERS)
-app.use(cors());
-app.use(express.json());
+// ✅ FIXED CORS CONFIG
+app.use(cors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true
+}));
 
-// ✅ USE YOUR ROUTER (NOT express.Router)
+app.use(express.json());
+app.use('/uploads', express.static('uploads'));
+
+// ✅ ROUTES
 app.use("/", router);
 
 const PORT = 8000;
@@ -24,5 +31,5 @@ const PASSWORD = process.env.DB_PASSWORD;
 Connection(USERNAME, PASSWORD);
 
 app.listen(PORT, () => {
-  console.log(`Server is running successfully on PORT ${PORT}`);
+    console.log(`Server is running successfully on PORT ${PORT}`);
 });
