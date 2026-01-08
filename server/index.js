@@ -10,10 +10,10 @@ dotenv.config();
 const app = express();
 
 /**
- * ✅ CORS CONFIG (LOCAL + VERCEL)
- * Allows requests from:
- * - localhost (development)
- * - your Vercel frontend (production)
+ * ✅ RENDER-SAFE CORS CONFIG
+ * - Allows Vercel frontend
+ * - Handles preflight correctly
+ * - NO credentials (JWT via headers, not cookies)
  */
 app.use(
   cors({
@@ -22,27 +22,27 @@ app.use(
       "https://mern-blog-app-liart.vercel.app"
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true
+    allowedHeaders: ["Content-Type", "Authorization"]
   })
 );
 
-// middleware
+// ✅ MUST handle OPTIONS explicitly (IMPORTANT FOR RENDER)
+app.options("*", cors());
+
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 
-// routes
+// ROUTES
 app.use("/", router);
 
-// server port (Render provides PORT)
-const PORT = process.env.PORT || 8000;
-
-// database connection
+// DB
 const USERNAME = process.env.DB_USERNAME;
 const PASSWORD = process.env.DB_PASSWORD;
-
 Connection(USERNAME, PASSWORD);
 
+// PORT (Render uses process.env.PORT)
+const PORT = process.env.PORT || 8000;
+
 app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
