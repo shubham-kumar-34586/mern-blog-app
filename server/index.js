@@ -9,12 +9,7 @@ dotenv.config();
 
 const app = express();
 
-/**
- * ✅ RENDER-SAFE CORS CONFIG
- * - Allows Vercel frontend
- * - Handles preflight correctly
- * - NO credentials (JWT via headers, not cookies)
- */
+// ✅ CORS – Vercel + Localhost
 app.use(
   cors({
     origin: [
@@ -22,26 +17,27 @@ app.use(
       "https://mern-blog-app-liart.vercel.app"
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"]
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true
   })
 );
-
-// ✅ MUST handle OPTIONS explicitly (IMPORTANT FOR RENDER)
-app.options("*", cors());
 
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 
-// ROUTES
+/* ✅ HEALTH CHECK (MUST BE BEFORE ROUTER) */
+app.get("/", (req, res) => {
+  res.send("Backend is running 🚀");
+});
+
+/* ✅ API ROUTES */
 app.use("/", router);
 
-// DB
-const USERNAME = process.env.DB_USERNAME;
-const PASSWORD = process.env.DB_PASSWORD;
-Connection(USERNAME, PASSWORD);
-
-// PORT (Render uses process.env.PORT)
+/* ✅ PORT (Render compatible) */
 const PORT = process.env.PORT || 8000;
+
+/* ✅ DB CONNECTION */
+Connection();
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
