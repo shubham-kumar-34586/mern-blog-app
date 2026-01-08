@@ -1,7 +1,8 @@
 import axios from "axios";
 import { SERVICE_URLS } from "../constants/config.js";
 
-const API_URL = "http://localhost:8000";
+// ✅ USE ENV VARIABLE
+const API_URL = process.env.REACT_APP_API_URL;
 
 const getAccessToken = () => localStorage.getItem("accessToken");
 
@@ -34,7 +35,6 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-
 const API = {};
 
 // AUTO ROUTES
@@ -47,19 +47,17 @@ for (const [key, value] of Object.entries(SERVICE_URLS)) {
     });
 }
 
-// GET POSTS WITH QUERY PARAMS
+// POSTS
 API.getAllPosts = (params) =>
   axiosInstance.get("/posts", { params });
 
-// EXPLICIT ROUTES
 API.getPostById = (id) => axiosInstance.get(`/post/${id}`);
 API.deletePost = (id) => axiosInstance.delete(`/delete/${id}`);
 API.updatePost = (body) => axiosInstance.put(`/update`, body);
 
+// COMMENTS
 API.newComment = (body) => axiosInstance.post("/comment", body);
 API.getComments = (postId) => axiosInstance.get(`/comments/${postId}`);
 API.deleteComment = (id) => axiosInstance.delete(`/comment/${id}`);
-
-
 
 export { API };
