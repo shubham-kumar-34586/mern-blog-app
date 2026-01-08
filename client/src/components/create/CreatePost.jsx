@@ -1,145 +1,103 @@
 import { useState, useEffect, useContext } from "react";
+import { Box, Button, TextField, Typography } from "@mui/material";
+import { useNavigate, useParams } from "react-router-dom";
 
-import { Box, styled, FormControl, InputBase, Button, TextareaAutosize } from "@mui/material";
-import { AddCircle as Add } from '@mui/icons-material';
-
-import { useLocation, useNavigate } from "react-router-dom";
-import { DataContext } from "../../context/DataProvider";
 import { API } from "../../service/api";
-
-const Container = styled(Box)`
-    margin: 50px 100px;
-`;
-
-const Image = styled('img')({
-    width: '100%',
-    height: '50vh',
-    objectFit: 'cover'
-});
-
-const StyledFormControl = styled(FormControl)`
-    margin-top: 10px;
-    display: flex;
-    flex-direction: row;
-`;
-
-const InputTextField = styled(InputBase)`
-    flex: 1;
-    margin: 0 30px;
-    font-size: 25px;
-`;
-
-const Textarea = styled(TextareaAutosize)`
-    width: 100%;
-    margin-top: 50px;
-    font-size: 18px;
-    border: none;
-    &:focus-visible{
-        outline: none;
-    }
-`;
+import { DataContext } from "../../context/DataProvider";
 
 const initialPost = {
-    title: '',
-    description: '',
-    picture: '',
-    username: '',
-    categories: '',
-    createdDate: new Date()
+  title: "",
+  description: "",
+  picture: "",
+  username: "",
+  categories: "All"
 };
 
 const CreatePost = () => {
+  const [post, setPost] = useState(initialPost);
 
-    const [post, setPost] = useState(initialPost);
-    const [file, setFile] = useState(null);
-    const [preview, setPreview] = useState('');
+  const { account } = useContext(DataContext);
+  const navigate = useNavigate();
+  const { id } = useParams();
 
-    const { account } = useContext(DataContext);
-    const location = useLocation();
-    const navigate = useNavigate();
+  const isEditMode = Boolean(id);
 
-    const url = preview
-        ? preview
-        : 'https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8bGFwdG9wJTIwc2V0dXB8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80';
-
-    useEffect(() => {
-        if (!file) return;
-
-        const objectUrl = URL.createObjectURL(file);
-        setPreview(objectUrl);
-
-        const uploadImage = async () => {
-            const data = new FormData();
-            data.append("name", file.name);
-            data.append("file", file);
-
-            const response = await API.uploadFile(data);
-
-            if (response?.data) {
-                setPost(prev => ({
-                    ...prev,
-                    picture: response.data,
-                    categories: location.search?.split('=')[1] || 'All',
-                    username: account.username
-                }));
-            }
-        };
-
-        uploadImage();
-
-        return () => URL.revokeObjectURL(objectUrl);
-
-    }, [file]);
-
-    const handleChange = (e) => {
-        setPost({ ...post, [e.target.name]: e.target.value });
-    };
-
-    const savePost = async () => {
-        const updatedPost = {
-            ...post,
-            categories: post.categories || 'All',
-            username: account.username
-        };
-
-        let response = await API.createPost(updatedPost);
-        if (response.isSuccess) {
-            navigate('/');
+  // fetch post for update
+  useEffect(() => {
+    const fetchPost = async () => {
+      if (isEditMode) {
+        const response = await API.getPostById(id);
+        if (response?.isSuccess) {
+          setPost(response.data);
         }
+      }
     };
+    fetchPost();
+  }, [id, isEditMode]);
 
-    return (
-        <Container>
-            <Image src={url} alt="banner" />
+  const handleChange = (e) => {
+    setPost({ ...post, [e.target.name]: e.target.value });
+  };
 
-            <StyledFormControl>
-                <label htmlFor="fileInput">
-                    <Add fontSize="large" color="action" />
-                </label>
-                <input
-                    type="file"
-                    id="fileInput"
-                    style={{ display: 'none' }}
-                    onChange={(e) => setFile(e.target.files[0])}
-                />
-                <InputTextField
-                    placeholder="Title"
-                    onChange={handleChange}
-                    name="title"
-                />
-                <Button variant="contained" color="primary" onClick={savePost}>
-                    Publish
-                </Button>
-            </StyledFormControl>
+  const savePost = async () => {
+    let response;
 
-            <Textarea
-                minRows={5}
-                placeholder="Tell your story..."
-                onChange={handleChange}
-                name="description"
-            />
-        </Container>
-    );
+    if (isEditMode) {
+      // ✅ BACKEND EXPECTS _id IN BODY
+      response = await API.updatePost({
+        _id: post._id,
+        title: post.title,
+        description: post.description,
+        picture: post.picture,
+        categories: post.categories,
+        username: account.username
+      });
+    } else {
+      response = await API.createPost({
+        title: post.title,
+        description: post.description,
+        picture: post.picture,
+        categories: post.categories,
+        username: account.username
+      });
+    }
+
+    if (response?.isSuccess) {
+      navigate("/");
+    }
+  };
+
+  return (
+    <Box sx={{ margin: "50px 100px" }}>
+      <Typography variant="h4" sx={{ mb: 3 }}>
+        {isEditMode ? "Update Post" : "Create New Post"}
+      </Typography>
+
+      <TextField
+        label="Title"
+        name="title"
+        value={post.title}
+        onChange={handleChange}
+        fullWidth
+        sx={{ mb: 2 }}
+      />
+
+      <TextField
+        label="Description"
+        name="description"
+        value={post.description}
+        onChange={handleChange}
+        multiline
+        rows={6}
+        fullWidth
+        sx={{ mb: 3 }}
+      />
+
+      <Button variant="contained" onClick={savePost}>
+        {isEditMode ? "Update" : "Publish"}
+      </Button>
+    </Box>
+  );
 };
 
 export default CreatePost;

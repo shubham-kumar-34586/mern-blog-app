@@ -1,24 +1,46 @@
-
-
-//components
-import { Grid } from "@mui/material";
+import { Box } from "@mui/material";
 import Banner from "../banner/Banner";
 import Categories from "./Categories";
+import Posts from "./post/Posts";
 
 const Home = () => {
   return (
     <>
-     <Banner />
-     <Grid container>
-        <Grid item lg={2} sm={2} xs={12}>
-            <Categories />
-        </Grid>
-        <Grid container item xs={12} sm={10} lg={10}>
-            Post
-        </Grid>
-     </Grid>
+      <Banner />
+
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "flex-start",
+          gap: 3,
+          padding: 3,
+          width: "100%",
+          maxWidth: "1400px",
+          margin: "0 auto"
+        }}
+      >
+        {/* SIDEBAR */}
+        <Box
+          sx={{
+            width: 260,
+            flexShrink: 0
+          }}
+        >
+          <Categories />
+        </Box>
+
+        {/* POSTS */}
+        <Box
+          sx={{
+            flexGrow: 1,
+            minWidth: 0 // 🔥 IMPORTANT for flex layouts
+          }}
+        >
+          <Posts />
+        </Box>
+      </Box>
     </>
-  )
-}
+  );
+};
 
 export default Home;

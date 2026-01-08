@@ -1,12 +1,29 @@
+/* Global Reset */
+* {
+  box-sizing: border-box;
+}
+
+/* Lock layout width to prevent reflow on zoom */
+html,
 body {
   margin: 0;
+  padding: 0;
+
+  /* 🔒 IMPORTANT: prevents posts going below categories */
+  min-width: 1300px;
+
+  /* Allow horizontal scroll instead of breaking layout */
+  overflow-x: auto;
+
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
+
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Code font (unchanged) */
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

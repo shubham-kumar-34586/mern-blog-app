@@ -1,53 +1,57 @@
-import { useState } from 'react';
-
-import DataProvider from './context/DataProvider';
-
-import { Routes, Route, Outlet, Navigate } from 'react-router-dom';
-
+import { Routes, Route, Navigate, Outlet } from "react-router-dom";
+import DataProvider from "./context/DataProvider";
 
 // components
-import Login from './components/account/Login';
-import Home from './components/home/Home';
-import Header from './components/account/header/Header';
-import CreatePost from './components/create/CreatePost';
+import Login from "./components/account/Login";
+import Header from "./components/account/header/Header";
+import Home from "./components/home/Home";
+import CreatePost from "./components/create/CreatePost";
+import DetailView from "./components/details/DetailView";
+import About from "./components/about/About";
+import Contact from "./components/contact/Contact";
 
-const PrivateRoute = ({ isAuthenticated, ...props }) => {
-  return isAuthenticated ? 
-  <>
-  <Header />
-  <Outlet />
-  </> 
-  : <Navigate replace to="/login" />;
-};
+// 🔐 Protected Layout
+const ProtectedLayout = () => {
+  const isAuthenticated = Boolean(localStorage.getItem("accessToken"));
 
-
-
-
-function App() {
-
-  const [isAuthenticated, isUserAuthenticated] = useState(false);
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
 
   return (
-    
-  <DataProvider>
-    <div style={{marginTop: 64 }}>
-      <Routes>
-        <Route path="/login" element={<Login isUserAuthenticated={isUserAuthenticated} />} />
+    <>
+      <Header />
+      <Outlet />
+    </>
+  );
+};
 
-        <Route path="/" element={<PrivateRoute isAuthenticated={isAuthenticated} />}>
-          <Route path="/" element={<Home />} />
-        </Route>
+function App() {
+  return (
+    <DataProvider>
+      <div style={{ marginTop: 64 }}>
+        <Routes>
 
-        <Route path="/create" element={<PrivateRoute isAuthenticated={isAuthenticated} />}>
-          <Route path="/create" element={<CreatePost />} />
-        </Route>
-      </Routes>
-    </div>
-  
-  </DataProvider>
+          {/* 🔓 Public */}
+          <Route path="/login" element={<Login />} />
+
+          {/* 🔐 Protected */}
+          <Route element={<ProtectedLayout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/create" element={<CreatePost />} />
+            <Route path="/update/:id" element={<CreatePost />} />
+            <Route path="/details/:id" element={<DetailView />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+          </Route>
+
+          {/* 🚫 Fallback */}
+          <Route path="*" element={<Navigate to="/login" replace />} />
+
+        </Routes>
+      </div>
+    </DataProvider>
   );
 }
 
 export default App;
-
-/* */

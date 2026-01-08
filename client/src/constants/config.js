@@ -44,7 +44,15 @@ export const API_NOTIFICATION_MESSAGES = {
 // SAMple request
 export const SERVICE_URLS = {
     userSignup: { url: '/signup', method: 'POST' },
-    userLogin: {url: '/login', method: 'POST'},
-    uploadFile: { url: '/file/upload', method: 'POST' },
-    createPost: { url: '/create', method: 'POST' }
-}
+    userLogin: { url: '/login', method: 'POST' },
+
+    // POSTS
+    getAllPosts: { url: '/posts', method: 'GET', params: true },
+    getPostById: { url: '/post', method: 'GET' },
+    createPost: { url: '/create', method: 'POST' },
+    updatePost: { url: '/update', method: 'PUT', useId: true },
+    deletePost: { url: '/delete', method: 'DELETE' },
+
+    // FILE
+    uploadFile: { url: '/file/upload', method: 'POST' }
+};
