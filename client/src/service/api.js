@@ -1,8 +1,7 @@
 import axios from "axios";
 import { SERVICE_URLS } from "../constants/config.js";
 
-// ✅ USE ENV VARIABLE
-const API_URL = process.env.REACT_APP_API_URL;
+const API_URL = "https://blog-backend-fi31.onrender.com";
 
 const getAccessToken = () => localStorage.getItem("accessToken");
 
