@@ -1,58 +1,47 @@
-// API_NOTIFICATION_MESSAGES 
+// API_NOTIFICATION_MESSAGES
 // This object stores all API related messages in one place
 
-import { UploadFile } from "@mui/icons-material";
-import CreatePost from "../components/create/CreatePost";
-
-// It helps in showing loading, success, and error messages in the UI
 export const API_NOTIFICATION_MESSAGES = {
+  loading: {
+    title: "Loading...",
+    message: "Data is being loaded, please wait",
+  },
 
-    // Shown when an API call is in progress
-    loading: {
-        title: 'Loading...', // Title for loader
-        message: 'Data is being loaded, please wait' // Message shown to user
-    }, 
+  success: {
+    title: "Success",
+    message: "Data successfully loaded",
+  },
 
-    // Shown when API call is successful
-    success: {
-        title: 'Success', // Success title
-        message: 'Data successfully loaded' // Success message
-    },
+  responseFailure: {
+    title: "Error",
+    message:
+      "An error occurred while fetching response from the server. Please try again",
+  },
 
-    // Shown when backend responds with an error
-    responseFailure: {
-        title: 'Error', // Error title
-        message: 'An error occurred while fetching response from the server. Please try again'
-    },
+  requestFailure: {
+    title: "Error",
+    message: "An error occurred while parsing request data",
+  },
 
-    // Shown when request is sent but no response is received
-    requestFailure: {
-        title: 'Error', // Error title
-        message: 'An error occurred while parsing request data'
-    },
-
-    // Shown when there is a network or internet issue
-    networkError: {
-        title: 'Error', // Error title
-        message: 'Unable to connect with the server. Please check your internet connection and try again later'
-    }
+  networkError: {
+    title: "Error",
+    message:
+      "Unable to connect with the server. Please check your internet connection and try again later",
+  },
 };
 
-
-
-//API Service Call
-// SAMple request
+// API SERVICE URLS
 export const SERVICE_URLS = {
-    userSignup: { url: '/signup', method: 'POST' },
-    userLogin: { url: '/login', method: 'POST' },
+  userSignup: { url: "/signup", method: "POST" },
+  userLogin: { url: "/login", method: "POST" },
 
-    // POSTS
-    getAllPosts: { url: '/posts', method: 'GET', params: true },
-    getPostById: { url: '/post', method: 'GET' },
-    createPost: { url: '/create', method: 'POST' },
-    updatePost: { url: '/update', method: 'PUT', useId: true },
-    deletePost: { url: '/delete', method: 'DELETE' },
+  // POSTS
+  getAllPosts: { url: "/posts", method: "GET" },
+  getPostById: { url: "/post", method: "GET" },
+  createPost: { url: "/create", method: "POST" },
+  updatePost: { url: "/update", method: "PUT" },
+  deletePost: { url: "/delete", method: "DELETE" },
 
-    // FILE
-    uploadFile: { url: '/file/upload', method: 'POST' }
+  // FILE
+  uploadFile: { url: "/file/upload", method: "POST" },
 };

@@ -10,7 +10,7 @@ const initialPost = {
   description: "",
   picture: "",
   username: "",
-  categories: "All"
+  categories: "All",
 };
 
 const CreatePost = () => {
@@ -22,7 +22,6 @@ const CreatePost = () => {
 
   const isEditMode = Boolean(id);
 
-  // fetch post for update
   useEffect(() => {
     const fetchPost = async () => {
       if (isEditMode) {
@@ -33,7 +32,7 @@ const CreatePost = () => {
       }
     };
     fetchPost();
-  }, [id, isEditMode]);
+  }, [id, isEditMode]); // ✅ ESLint correct
 
   const handleChange = (e) => {
     setPost({ ...post, [e.target.name]: e.target.value });
@@ -43,14 +42,13 @@ const CreatePost = () => {
     let response;
 
     if (isEditMode) {
-      // ✅ BACKEND EXPECTS _id IN BODY
       response = await API.updatePost({
         _id: post._id,
         title: post.title,
         description: post.description,
         picture: post.picture,
         categories: post.categories,
-        username: account.username
+        username: account.username,
       });
     } else {
       response = await API.createPost({
@@ -58,7 +56,7 @@ const CreatePost = () => {
         description: post.description,
         picture: post.picture,
         categories: post.categories,
-        username: account.username
+        username: account.username,
       });
     }
 

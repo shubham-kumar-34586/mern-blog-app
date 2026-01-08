@@ -5,7 +5,6 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { API } from "../../service/api";
 import { DataContext } from "../../context/DataProvider";
-
 import Comments from "./comments/Comments";
 
 // ===== Styles =====
@@ -34,8 +33,6 @@ const Author = styled(Box)`
   margin: 20px 0;
 `;
 
-// ===== Component =====
-
 const DetailView = () => {
   const [post, setPost] = useState({});
   const { account } = useContext(DataContext);
@@ -54,7 +51,7 @@ const DetailView = () => {
       }
     };
     fetchPost();
-  }, [id]);
+  }, [id]); // ✅ ESLint correct
 
   const handleDelete = async () => {
     const response = await API.deletePost(post._id);
@@ -67,7 +64,6 @@ const DetailView = () => {
     <Container>
       <Image src={post.picture || fallbackImage} alt="post" />
 
-      {/* EDIT / DELETE (ONLY OWNER) */}
       {account?.username === post?.username && (
         <Box style={{ float: "right" }}>
           <Link to={`/update/${post._id}`}>
@@ -96,7 +92,6 @@ const DetailView = () => {
 
       <Typography>{post.description}</Typography>
 
-      {/* 🔥 COMMENTS SECTION */}
       {post._id && <Comments postId={post._id} />}
     </Container>
   );
