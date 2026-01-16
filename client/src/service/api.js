@@ -1,8 +1,8 @@
 import axios from "axios";
 import { SERVICE_URLS } from "../constants/config.js";
 
-/* ✅ ENV BASED BACKEND URL */
-const API_URL = process.env.REACT_APP_BACKEND_URL;
+// ✅ PRODUCTION BACKEND URL
+const API_URL = "https://mern-blog-app-server-three.vercel.app";
 
 const getAccessToken = () => localStorage.getItem("accessToken");
 
@@ -10,11 +10,11 @@ const axiosInstance = axios.create({
   baseURL: API_URL,
   timeout: 15000,
   headers: {
-    "Content-Type": "application/json"
-  }
+    "Content-Type": "application/json",
+  },
 });
 
-/* 🔐 Attach JWT */
+// 🔐 JWT attach
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = getAccessToken();
@@ -26,34 +26,34 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-/* ✅ SAFE RESPONSE HANDLING */
+// ✅ uniform response handling
 axiosInstance.interceptors.response.use(
   (response) => ({
     isSuccess: true,
-    data: response.data
+    data: response.data,
   }),
   (error) => ({
     isSuccess: false,
     error:
       error?.response?.data?.msg ||
       error?.response?.data?.error ||
-      "Server error"
+      "Server error",
   })
 );
 
 const API = {};
 
-/* AUTO ROUTES */
+// AUTO ROUTES
 for (const [key, value] of Object.entries(SERVICE_URLS)) {
   API[key] = (body) =>
     axiosInstance({
       method: value.method,
       url: value.url,
-      data: body
+      data: body,
     });
 }
 
-/* POSTS */
+// POSTS
 API.getAllPosts = (params) =>
   axiosInstance.get("/posts", { params });
 
@@ -66,7 +66,7 @@ API.updatePost = (body) =>
 API.deletePost = (id) =>
   axiosInstance.delete(`/delete/${id}`);
 
-/* COMMENTS */
+// COMMENTS
 API.newComment = (body) =>
   axiosInstance.post("/comment", body);
 
