@@ -11,14 +11,12 @@ dotenv.config();
 
 const app = express();
 
-/* ✅ ensure uploads folder */
 const __dirname = path.resolve();
 const uploadDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);
 }
 
-/* ✅ cors */
 app.use(
   cors({
     origin: process.env.CLIENT_URL,
@@ -29,16 +27,20 @@ app.use(
 app.use(express.json());
 app.use("/uploads", express.static(uploadDir));
 
-/* ✅ health check */
 app.get("/", (req, res) => {
   res.send("Backend is running 🚀");
 });
 
-/* ✅ routes */
+/* 🔥 DB CONNECT PER REQUEST (VERCEL SAFE) */
+app.use(async (req, res, next) => {
+  try {
+    await Connection();
+    next();
+  } catch (err) {
+    res.status(500).json({ msg: "DB connection failed" });
+  }
+});
+
 app.use("/", router);
 
-/* ✅ db connect (NO listen) */
-Connection();
-
-/* 🔥 EXPORT APP (Vercel requirement) */
 export default app;
