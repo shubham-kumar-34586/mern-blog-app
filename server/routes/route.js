@@ -1,5 +1,5 @@
 import express from "express";
-import upload from "../utils/upload.js";
+
 import { signupUser, loginUser } from "../controller/user-controller.js";
 import { uploadImage, getImage } from "../controller/image-controller.js";
 import {
@@ -7,43 +7,36 @@ import {
   getAllPosts,
   getPostById,
   updatePost,
-  deletePost
+  deletePost,
 } from "../controller/post-controller.js";
-
 import {
   newComment,
   getComments,
-  deleteComment
+  deleteComment,
 } from "../controller/comment-controller.js";
 
-import upload from "../utils/upload.js";
+import upload from "../utils/upload.js"; // ✅ ONLY ONCE
 import { authenticateToken } from "../controller/jwt-controller.js";
 
 const router = express.Router();
 
-/* ===== AUTH ===== */
+/* AUTH */
 router.post("/signup", signupUser);
 router.post("/login", loginUser);
 
-/* ===== FILE ===== */
+/* FILE */
 router.post("/file/upload", upload.single("file"), uploadImage);
 router.get("/file/:filename", getImage);
 
-/* ===== POSTS ===== */
-/* 🔓 PUBLIC */
+/* POSTS */
 router.get("/posts", getAllPosts);
 router.get("/post/:id", getPostById);
-
-/* 🔒 PROTECTED */
 router.post("/create", authenticateToken, createPost);
 router.put("/update", authenticateToken, updatePost);
 router.delete("/delete/:id", authenticateToken, deletePost);
 
-/* ===== COMMENTS ===== */
-/* 🔓 READ PUBLIC */
+/* COMMENTS */
 router.get("/comments/:id", getComments);
-
-/* 🔒 WRITE PROTECTED */
 router.post("/comment", authenticateToken, newComment);
 router.delete("/comment/:id", authenticateToken, deleteComment);
 
