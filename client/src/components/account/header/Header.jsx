@@ -20,9 +20,11 @@ const Header = () => {
   const navigate = useNavigate();
 
   const logoutUser = () => {
-    localStorage.clear();
-    navigate("/login");
-  };
+  localStorage.clear();
+  navigate("/login");
+  window.location.reload(); // 🔥 ensures context reset
+};
+
 
   return (
     <Component>

@@ -116,7 +116,7 @@ const Login = () => {
 
       navigate("/");
     } else {
-      setError(response.error || "Invalid credentials");
+      setError(response?.error || "Invalid credentials");
     }
   };
 

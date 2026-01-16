@@ -1,27 +1,32 @@
 import axios from "axios";
 import { SERVICE_URLS } from "../constants/config.js";
 
-// ✅ RENDER BACKEND URL (NOT localhost)
-const API_URL = "https://blog-backend-fi31.onrender.com";
+/* ✅ ENV BASED BACKEND URL */
+const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 const getAccessToken = () => localStorage.getItem("accessToken");
 
 const axiosInstance = axios.create({
   baseURL: API_URL,
   timeout: 15000,
-  headers: { "Content-Type": "application/json" }
-});
-
-// 🔐 Attach JWT
-axiosInstance.interceptors.request.use((config) => {
-  const token = getAccessToken();
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  headers: {
+    "Content-Type": "application/json"
   }
-  return config;
 });
 
-// ✅ Clean response handling
+/* 🔐 Attach JWT */
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = getAccessToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+/* ✅ SAFE RESPONSE HANDLING */
 axiosInstance.interceptors.response.use(
   (response) => ({
     isSuccess: true,
@@ -29,13 +34,16 @@ axiosInstance.interceptors.response.use(
   }),
   (error) => ({
     isSuccess: false,
-    error: error?.response?.data?.msg || "Server error"
+    error:
+      error?.response?.data?.msg ||
+      error?.response?.data?.error ||
+      "Server error"
   })
 );
 
 const API = {};
 
-// AUTO ROUTES
+/* AUTO ROUTES */
 for (const [key, value] of Object.entries(SERVICE_URLS)) {
   API[key] = (body) =>
     axiosInstance({
@@ -45,7 +53,7 @@ for (const [key, value] of Object.entries(SERVICE_URLS)) {
     });
 }
 
-// POSTS
+/* POSTS */
 API.getAllPosts = (params) =>
   axiosInstance.get("/posts", { params });
 
@@ -58,7 +66,7 @@ API.updatePost = (body) =>
 API.deletePost = (id) =>
   axiosInstance.delete(`/delete/${id}`);
 
-// COMMENTS
+/* COMMENTS */
 API.newComment = (body) =>
   axiosInstance.post("/comment", body);
 

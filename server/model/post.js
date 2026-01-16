@@ -10,10 +10,11 @@ const postSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    picture:{
-        type: String,
-        required: true
+    picture: {
+    type: String,
+    default: ""
     },
+
     username:{
         type: String,
         required: true

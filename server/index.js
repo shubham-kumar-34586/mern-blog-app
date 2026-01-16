@@ -1,6 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import path from "path";
+import fs from "fs";
 
 import Connection from "./database/db.js";
 import router from "./routes/route.js";
@@ -9,34 +11,37 @@ dotenv.config();
 
 const app = express();
 
-// ✅ CORS – Vercel + Localhost
+/* ✅ ENSURE UPLOADS FOLDER EXISTS (PRODUCTION SAFE) */
+const __dirname = path.resolve();
+const uploadDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
+
+/* ✅ CORS (LOCAL + PRODUCTION) */
 app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "https://mern-blog-app-liart.vercel.app"
+      process.env.CLIENT_URL
     ],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
   })
 );
 
 app.use(express.json());
-app.use("/uploads", express.static("uploads"));
+app.use("/uploads", express.static(uploadDir));
 
-/* ✅ HEALTH CHECK (MUST BE BEFORE ROUTER) */
+/* ✅ HEALTH CHECK */
 app.get("/", (req, res) => {
   res.send("Backend is running 🚀");
 });
 
-/* ✅ API ROUTES */
+/* ✅ ROUTES */
 app.use("/", router);
 
-/* ✅ PORT (Render compatible) */
+/* ✅ DB FIRST, THEN SERVER */
 const PORT = process.env.PORT || 8000;
-
-/* ✅ DB CONNECTION */
 Connection();
 
 app.listen(PORT, () => {
