@@ -1,5 +1,5 @@
 import express from "express";
-
+import upload from "../utils/upload.js";
 import { signupUser, loginUser } from "../controller/user-controller.js";
 import { uploadImage, getImage } from "../controller/image-controller.js";
 import {
