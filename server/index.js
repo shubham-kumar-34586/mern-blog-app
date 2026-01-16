@@ -11,20 +11,17 @@ dotenv.config();
 
 const app = express();
 
-/* ✅ ENSURE UPLOADS FOLDER EXISTS (PRODUCTION SAFE) */
+/* ✅ ensure uploads folder */
 const __dirname = path.resolve();
 const uploadDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);
 }
 
-/* ✅ CORS (LOCAL + PRODUCTION) */
+/* ✅ cors */
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      process.env.CLIENT_URL
-    ],
+    origin: process.env.CLIENT_URL,
     credentials: true
   })
 );
@@ -32,18 +29,16 @@ app.use(
 app.use(express.json());
 app.use("/uploads", express.static(uploadDir));
 
-/* ✅ HEALTH CHECK */
+/* ✅ health check */
 app.get("/", (req, res) => {
   res.send("Backend is running 🚀");
 });
 
-/* ✅ ROUTES */
+/* ✅ routes */
 app.use("/", router);
 
-/* ✅ DB FIRST, THEN SERVER */
-const PORT = process.env.PORT || 8000;
+/* ✅ db connect (NO listen) */
 Connection();
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+/* 🔥 EXPORT APP (Vercel requirement) */
+export default app;
