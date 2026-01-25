@@ -16,3 +16,4 @@ root.render(
 
 reportWebVitals();
 
+//entry point for the react app
